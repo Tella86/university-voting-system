@@ -1,0 +1,23 @@
+university-voting-system/
+├── index.html               # Landing Page
+├── login.php                # Login Page
+├── register.php             # Registration Page
+├── dashboard.php            # Admin Dashboard
+├── admin/
+│   ├── manage_elections.php # Admin: Create/Manage Elections
+│   ├── approve_candidates.php # Admin: Approve Candidate Nominations
+│   └── results.php          # Admin: View/Download Results
+├── voter/
+│   ├── cast_vote.php        # Voter: Cast Vote
+│   └── profile.php          # Voter: View Profile
+├── candidate/
+│   └── submit_nomination.php # Candidate: Submit Nominations
+├── results.php              # Results Display
+├── includes/
+│   ├── db.php               # Database Connection
+│   ├── functions.php        # Helper Functions
+│   └── auth.php             # Authentication Middleware
+├── styles.css               # Custom CSS
+└── assets/
+    ├── bootstrap/           # Bootstrap CSS/JS
+    └── images/              # Uploaded Images (Profile Photos, etc.)
