@@ -1,7 +1,9 @@
 <?php
+session_start();
 include '../includes/db.php';
-include '../includes/auth.php'; // Ensures only admins can access
+include '../includes/auth.php'; // Restrict access to admins only
 
+// Handle election creation
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = $_POST['title'];
     $start_date = $_POST['start_date'];
@@ -9,8 +11,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt = $pdo->prepare("INSERT INTO elections (title, start_date, end_date) VALUES (?, ?, ?)");
     $stmt->execute([$title, $start_date, $end_date]);
+    $success = "Election created successfully.";
 }
-$elections = $pdo->query("SELECT * FROM elections")->fetchAll();
+
+// Fetch all elections
+$elections = $pdo->query("SELECT * FROM elections ORDER BY start_date DESC")->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,9 +28,10 @@ $elections = $pdo->query("SELECT * FROM elections")->fetchAll();
 <body>
     <div class="container mt-5">
         <h2>Manage Elections</h2>
-        <form method="POST">
+        <?php if (isset($success)) echo "<div class='alert alert-success'>$success</div>"; ?>
+        <form method="POST" class="mb-4">
             <div class="mb-3">
-                <label>Title</label>
+                <label>Election Title</label>
                 <input type="text" name="title" class="form-control" required>
             </div>
             <div class="mb-3">
@@ -36,14 +42,28 @@ $elections = $pdo->query("SELECT * FROM elections")->fetchAll();
                 <label>End Date</label>
                 <input type="date" name="end_date" class="form-control" required>
             </div>
-            <button type="submit" class="btn btn-success">Create Election</button>
+            <button type="submit" class="btn btn-primary">Create Election</button>
         </form>
-        <h3 class="mt-5">Existing Elections</h3>
-        <ul>
-            <?php foreach ($elections as $election): ?>
-                <li><?= htmlspecialchars($election['title']) ?> (<?= $election['start_date'] ?> to <?= $election['end_date'] ?>)</li>
-            <?php endforeach; ?>
-        </ul>
+
+        <h3>Existing Elections</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($elections as $election): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($election['title']) ?></td>
+                        <td><?= $election['start_date'] ?></td>
+                        <td><?= $election['end_date'] ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
     </div>
 </body>
 </html>
